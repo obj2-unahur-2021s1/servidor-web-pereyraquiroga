@@ -9,25 +9,24 @@ enum class CodigoHttp(val codigo: Int) {
   NOT_IMPLEMENTED(501),
   NOT_FOUND(404),
 }
-class URL(val protocolo: String , val ruta : String, val extension:String ){
 
+class Pedido(val ip: String, val url: String, val fechaHora: LocalDateTime){
+
+  fun protocoloUrl() = url.split(":").first()
+  fun rutaUrl() = "/" + url.split(""".[a-z]*/""".toRegex()).last()
+  fun extensionUrl() = url.split(".").last()
+
+  }
+
+class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido)
+
+class ServidorWeb{
+
+  fun realizarPedido(pedido: Pedido) :Respuesta {
+    if (pedido.url=="http") {
+      return Respuesta(CodigoHttp.OK, "",10,pedido)
+    }
+    return Respuesta(CodigoHttp.NOT_IMPLEMENTED,  "", 10, pedido)
+  }
 }
- class Pedido(val ip: Double, val url: URL, val fechaHora: LocalDateTime){
- fun verificadorHTTP(){
-   if(url.protocolo == "http" ){
-                                   // Si la url no es http tirar un codigo de respuesta 501
-   }
-   else{
-     print(CodigoHttp.NOT_FOUND)
-   }
- }
 
-}
-
-
-
-
-class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido){
-
-
-}

@@ -1,15 +1,17 @@
 package ar.edu.unahur.obj2.servidorWeb
 
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
 
 class ServidorWebTest : DescribeSpec({
-  val url = URL("HTTPS","/documentos/doc1.html","html")
-  val pedido1=Pedido(192.168,url, LocalDateTime.of(2020, 3, 20, 2, 0, 0))
- val respuesta=Respuesta(CodigoHttp.OK,"cuerpo",12,pedido1)
   describe("Un servidor web") {
-    it("Verificar si es HTTP"){
-      pedido1.verificadorHTTP()
+  val pedido1=Pedido("198.168.1.5","https://pepito.com.ar/hola.txt", LocalDateTime.now())
+  val servidorWeb=ServidorWeb()
+
+    it("devuelve 501 si recibe una pedido que NO es HTTP"){
+      servidorWeb.realizarPedido(pedido1).codigo.shouldBe(CodigoHttp.NOT_IMPLEMENTED)
     }
+
   }
 })
