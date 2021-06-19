@@ -37,5 +37,6 @@ val  modulos= mutableListOf<Modulo>()
     return Respuesta(CodigoHttp.NOT_IMPLEMENTED,  "", 10, pedido)
   }
 
-  fun moduloQuePuedeResponderAlPedido(pedido:Pedido)= modulos.find{m->m.puedeAtenderElPedido(pedido)}
+  fun moduloQuePuedeResponderAlPedido(pedido:Pedido)=this.modulos.any {it.puedeAtenderElPedido(pedido)}
+
 }

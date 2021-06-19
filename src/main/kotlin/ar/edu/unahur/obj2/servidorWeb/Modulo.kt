@@ -1,10 +1,7 @@
 package ar.edu.unahur.obj2.servidorWeb
 
-class Modulo(val tipo : Tipo,val tiempoRespuesta:Int) {  // VAL PORQUE ES FIJO
-    val extensiones = mutableListOf<Extension>()
-
-    fun puedeAtenderElPedido(pedido:Pedido) = extensiones.any{e->e.toString() == pedido.extensionUrl()}
-   // fun agregarExtension(extension:Extension)= extensiones.add(extension)
+class Modulo(val extensiones: List<String>,val tipo:Tipo ,val tiempoRespuesta:Int) {
+    fun puedeAtenderElPedido(pedido:Pedido) = extensiones.any{e->pedido.url.endsWith(e)}
 }
 
 enum class Extension(val tipo: Tipo) {
