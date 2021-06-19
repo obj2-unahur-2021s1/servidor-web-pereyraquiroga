@@ -21,6 +21,14 @@ class Pedido(val ip: String, val url: String, val fechaHora: LocalDateTime){
 class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido)
 
 class ServidorWeb{
+val  modulos= mutableListOf<Modulo>()
+
+  fun quitarModulo(modulo:Modulo) {
+    modulos.remove(modulo)
+  }
+  fun agregarModulo(modulo:Modulo){
+    modulos.add(modulo)
+  }
 
   fun realizarPedido(pedido: Pedido) :Respuesta {
     if (pedido.url=="http") {
@@ -28,5 +36,6 @@ class ServidorWeb{
     }
     return Respuesta(CodigoHttp.NOT_IMPLEMENTED,  "", 10, pedido)
   }
-}
 
+  fun moduloQuePuedeResponderAlPedido(pedido:Pedido)= modulos.find{m->m.puedeAtenderElPedido(pedido)}
+}
