@@ -1,17 +1,7 @@
 package ar.edu.unahur.obj2.servidorWeb
 
-class Modulo(val extensiones: List<String>,val tipo:Tipo ,val tiempoRespuesta:Int) {
-    fun puedeAtenderElPedido(pedido:Pedido) = extensiones.any{e->pedido.url.endsWith(e)}
-}
-
-enum class Extension(val tipo: Tipo) {
-    jpg(Tipo.IMAGENES),
-    png(Tipo.IMAGENES),
-    gif(Tipo.IMAGENES),
-    docx(Tipo.TEXTO),
-    odt(Tipo.TEXTO),
-    txt(Tipo.TEXTO),
-    mp4(Tipo.VIDEO)
+class Modulo(val extensiones: List<String>,val body: String,val tiempoRespuesta:Int) {
+    fun puedeAtenderElPedido(url:String) = extensiones.any{e->url.endsWith(e)}
 }
 
 enum class Tipo() {

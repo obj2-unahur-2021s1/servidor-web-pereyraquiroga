@@ -34,9 +34,15 @@ val  modulos= mutableListOf<Modulo>()
     if (pedido.url=="http") {
       return Respuesta(CodigoHttp.OK, "",10,pedido)
     }
+    if (hayModuloParaElPedido(pedido)){
+      val modulito=this.modulos.find {it.puedeAtenderElPedido(pedido.url)}!!
+      return Respuesta(CodigoHttp.OK,modulito.body,modulito.tiempoRespuesta,pedido)
+    }
     return Respuesta(CodigoHttp.NOT_IMPLEMENTED,  "", 10, pedido)
   }
 
-  fun moduloQuePuedeResponderAlPedido(pedido:Pedido)=this.modulos.any {it.puedeAtenderElPedido(pedido)}
+  fun hayModuloParaElPedido(pedido:Pedido)=this.modulos.any {it.puedeAtenderElPedido(pedido.url)}
+
+
 
 }
