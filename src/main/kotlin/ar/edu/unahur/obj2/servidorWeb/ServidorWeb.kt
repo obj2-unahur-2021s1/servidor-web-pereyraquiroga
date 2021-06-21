@@ -16,17 +16,58 @@ class Pedido(val ip: String, val url: String, val fechaHora: LocalDateTime){
   fun rutaUrl() = "/" + url.split(""".[a-z]*/""".toRegex()).last()
   fun extensionUrl() = url.split(".").last()
 
-  }
+}
 
 class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido)
 
 class ServidorWeb{
+  val  modulos= mutableListOf<Modulo>()
+  val analizadores= mutableListOf<Analizador>()
+
+  fun quitarAnalizador(analizador: Analizador){
+    analizadores.remove(analizador)
+  }
+  fun agregarAnalizador(analizador: Analizador){
+    analizadores.add(analizador)
+  }
+
+  fun quitarModulo(modulo:Modulo) {
+    modulos.remove(modulo)
+  }
+  fun agregarModulo(modulo:Modulo){
+    modulos.add(modulo)
+  }
 
   fun realizarPedido(pedido: Pedido) :Respuesta {
-    if (pedido.url=="http") {
-      return Respuesta(CodigoHttp.OK, "",10,pedido)
+    if (pedido.url == "http") {
+      return Respuesta(CodigoHttp.OK, "", 10, pedido)
     }
-    return Respuesta(CodigoHttp.NOT_IMPLEMENTED,  "", 10, pedido)
+    else {
+      return Respuesta(CodigoHttp.NOT_IMPLEMENTED, "", 10, pedido)
+    }
   }
-}
 
+  fun hayModuloQueRespondaElPedido(pedido: Pedido): Respuesta{ // DEVUELVE RESPUESTA SEGUN SI HAY O NO UN MODULO QUE RESP AL PEDIDO
+      if (hayModuloParaElPedido(pedido)) {
+        val modulito = this.modulos.find { it.puedeAtenderElPedido(pedido.url) }!!
+
+        analizadores.forEach{ // EL SERVIDOR LE REENVIA LA RESPUESTA A LOS ANALIZADORES QUE TENGA EN ESE MOMENTO
+          it.recibeRespuestaServidor(Respuesta(CodigoHttp.OK, modulito.body, modulito.tiempoRespuesta, pedido),modulito)
+        }
+        return Respuesta(CodigoHttp.OK, modulito.body, modulito.tiempoRespuesta, pedido)
+      }
+
+
+      else{ return Respuesta(CodigoHttp.NOT_FOUND,"",10,pedido)}
+    }
+
+
+
+ // Ante cada pedido que atiende, el servidor le envía a todos los analizadores que tenga
+  //asignados en ese momento la respuesta y el módulo que la generó.
+
+  fun hayModuloParaElPedido(pedido:Pedido)= this.modulos.any{it.puedeAtenderElPedido(pedido.url)} // DEVUELVE SI HAY O NO
+
+
+
+}
