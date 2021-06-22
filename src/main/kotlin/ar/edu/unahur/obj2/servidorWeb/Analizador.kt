@@ -3,7 +3,7 @@ package ar.edu.unahur.obj2.servidorWeb
 open class Analizador {
 
    val modulosRespuestas = mutableMapOf <Modulo,MutableList<Respuesta>>()
-    fun recibeRespuestaServidor(respuesta: Respuesta,modulo: Modulo) {
+    open fun recibeRespuestaServidor(respuesta: Respuesta, modulo: Modulo) {
         modulosRespuestas[modulo]?.add(respuesta)
 
     }
