@@ -18,11 +18,14 @@ class Pedido(val ip: String, val url: String, val fechaHora: LocalDateTime){
 
 }
 
-class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido)
+class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido){
+  fun respuestaDemorada(demoraMinima:Int)= tiempo > demoraMinima
+}
 
 class ServidorWeb{
   val  modulos= mutableListOf<Modulo>()
   val analizadores= mutableListOf<Analizador>()
+
 
   fun quitarAnalizador(analizador: Analizador){
     analizadores.remove(analizador)

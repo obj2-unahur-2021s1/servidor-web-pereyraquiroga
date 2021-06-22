@@ -1,22 +1,33 @@
 package ar.edu.unahur.obj2.servidorWeb
 
 open class Analizador {
-    val listaRespuestas= mutableListOf<Respuesta>()
-    val listaModulos= mutableListOf<Modulo>()
+
+   val modulosRespuestas = mutableMapOf <Modulo,MutableList<Respuesta>>()
     fun recibeRespuestaServidor(respuesta: Respuesta,modulo: Modulo) {
-        listaRespuestas.add(respuesta)
-        listaModulos.add(modulo)
+        modulosRespuestas[modulo]?.add(respuesta)
+
     }
 
 }
 
-class AnalizadorIpSospechosa: Analizador() {
+class AnalizadorIpSospechosa(): Analizador() {
+    val ipSospechosaYpedidos = mutableMapOf <String,MutableList<Pedido>>()
 
+
+    fun registrarPedidoIpSospechosa(pedido: Pedido,ipSospechosa:String){
+        if(pedido.ip == ipSospechosa ){ // SI LA IP DEL PEDIDO ES LA IP SOSPECHOSA LO AGREGO A LA LISTA DE PEDIDOS DE IP SOSPECHA
+            ipSospechosaYpedidos[ipSospechosa]?.add(pedido)
+        }
+    }
+
+   // fun cuantosPedidosRealizoLaip(ipSospechosa:String)=
 }
 class AnalizadorEstatico: Analizador(){
 
 }
 
-class AnalizadorDemora: Analizador(){
+class AnalizadorDemora(val demoraMinima:Int): Analizador(){
+
+    fun cantidadDeRespuestasDemoradas(modulo: Modulo)= modulosRespuestas[modulo]?.count{it.respuestaDemorada(demoraMinima)}
 
 }
