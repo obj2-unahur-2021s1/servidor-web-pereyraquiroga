@@ -31,3 +31,15 @@ class AnalizadorDemora(val demoraMinima:Int): Analizador(){
     fun cantidadDeRespuestasDemoradas(modulo: Modulo)= modulosRespuestas[modulo]?.count{it.respuestaDemorada(demoraMinima)}
 
 }
+
+class AnalizadorEstadistico: Analizador(){
+    val respuestaAAnalizar = mutableListOf<Respuesta>()
+
+    override fun recibeRespuestaServidor(respuesta :Respuesta, modulo :Modulo){
+        respuestaAAnalizar.add(respuesta)
+    }
+
+    fun tiempoDeRespuestaPromedio()=respuestaAAnalizar.sumBy { it.tiempo }/respuestaAAnalizar.size
+
+
+}
