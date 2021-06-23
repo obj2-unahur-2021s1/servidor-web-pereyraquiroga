@@ -1,5 +1,7 @@
 package ar.edu.unahur.obj2.servidorWeb
 
+import java.time.LocalDateTime
+
 abstract class Analizador {
 
     val listaRespuesta= mutableListOf<Respuesta>()
@@ -47,7 +49,11 @@ class AnalizadorEstadistica: Analizador(){
 
     fun tiempoDeRespuestaPromedio()=respuestaAAnalizar.sumBy { it.tiempo }/respuestaAAnalizar.size
 
+    fun cantidadDePedidosEntre(momentoUno: LocalDateTime, momentoDos: LocalDateTime) =
+        this.respuestasAPedidos().filter { it.fechaHora.isAfter(momentoUno) &&
+                it.fechaHora.isBefore(momentoDos) }.size
 
+    fun respuestasAPedidos() = respuestaAAnalizar.map { it.pedido }
 
-
+    fun respuestasExitosas() = respuestaAAnalizar.filter { it.codigo == CodigoHttp.OK }
 }
