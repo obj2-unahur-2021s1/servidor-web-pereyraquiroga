@@ -19,7 +19,7 @@ class Pedido(val ip: String, val url: String, val fechaHora: LocalDateTime){
 }
 
 class Respuesta(val codigo: CodigoHttp, val body: String, val tiempo: Int, val pedido: Pedido){
-  fun respuestaDemorada(demoraMinima:Int)= tiempo > demoraMinima
+
 }
 
 class ServidorWeb{
@@ -52,12 +52,12 @@ class ServidorWeb{
 
   fun hayModuloQueRespondaElPedido(pedido: Pedido): Respuesta{ // DEVUELVE RESPUESTA SEGUN SI HAY O NO UN MODULO QUE RESP AL PEDIDO
       if (hayModuloParaElPedido(pedido)) {
-        val modulito = this.modulos.find { it.puedeAtenderElPedido(pedido.url) }!!
+        val modulo = this.modulos.find { it.puedeAtenderElPedido(pedido.url) }!!
 
         analizadores.forEach{ // EL SERVIDOR LE REENVIA LA RESPUESTA A LOS ANALIZADORES QUE TENGA EN ESE MOMENTO
-          it.recibeRespuestaServidor(Respuesta(CodigoHttp.OK, modulito.body, modulito.tiempoRespuesta, pedido),modulito)
+          it.recibeRespuestaServidor(Respuesta(CodigoHttp.OK, modulo.body, modulo.tiempoRespuesta, pedido),modulo)
         }
-        return Respuesta(CodigoHttp.OK, modulito.body, modulito.tiempoRespuesta, pedido)
+        return Respuesta(CodigoHttp.OK, modulo.body, modulo.tiempoRespuesta, pedido)
       }
 
 
@@ -65,11 +65,7 @@ class ServidorWeb{
     }
 
 
-
- // Ante cada pedido que atiende, el servidor le envía a todos los analizadores que tenga
-  //asignados en ese momento la respuesta y el módulo que la generó.
-
-  fun hayModuloParaElPedido(pedido:Pedido)= this.modulos.any{it.puedeAtenderElPedido(pedido.url)} // DEVUELVE SI HAY O NO
+  fun hayModuloParaElPedido(pedido:Pedido)= this.modulos.any{it.puedeAtenderElPedido(pedido.url)}
 
 
 

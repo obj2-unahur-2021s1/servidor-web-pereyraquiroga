@@ -10,7 +10,8 @@ class ServidorWebTest : DescribeSpec({
     val servidorWeb=ServidorWeb()
     val moduloTexto=Modulo(listOf<String>("txt","html"),"documento o pagina",10)
     val moduloImagen=Modulo(listOf<String>("jpg","png"),"que linda foto",10)
-    val analizador=AnalizadorIpSospechosa()
+    val analizadorIpSospechosa=AnalizadorIpSospechosa()
+    val analizadorDemora=AnalizadorDemora(5)
 
     it("devuelve 501 si recibe una pedido que NO es HTTP"){
       servidorWeb.realizarPedido(pedido1).codigo.shouldBe(CodigoHttp.NOT_IMPLEMENTED)
@@ -35,17 +36,28 @@ class ServidorWebTest : DescribeSpec({
     }
 
     it("el servidor le reenvia esa respuesta a sus analizadores"){
-      servidorWeb.agregarAnalizador(analizador)
+      servidorWeb.agregarAnalizador(analizadorIpSospechosa)
       servidorWeb.agregarModulo(moduloTexto)
       servidorWeb.hayModuloQueRespondaElPedido(pedido1).codigo.shouldBe(CodigoHttp.OK)
-      // PUEDE RESPONDER AL PEDIDO ENTONCES LE REENVIA LA RESPUESTA AL ANALIZADOR QUE AGREGAMOS
-      analizador.modulosRespuestas.size.shouldBe(1) // LE LLEGO LA RESPUESTA
+      // PUEDE RESPONDER AL PEDIDO ENTONCES LE REENVIA LA RESPUESTA Y EL MODULO AL ANALIZADOR QUE AGREGAMOS
+      analizadorIpSospechosa.listaRespuesta.size.shouldBe(1) // LE LLEGO LA RESPUESTA
     }
     it("le llego el modulo"){
-      servidorWeb.agregarAnalizador(analizador)
+      servidorWeb.agregarAnalizador(analizadorIpSospechosa)
       servidorWeb.agregarModulo(moduloTexto)
       servidorWeb.hayModuloQueRespondaElPedido(pedido1).codigo.shouldBe(CodigoHttp.OK)
-      analizador.modulosRespuestas.size.shouldBe(1) // LE LLEGO EL MODULO
+      analizadorIpSospechosa.listaModulo.size.shouldBe(1) // LE LLEGO EL MODULO
+    }
+
+    it("cantidad de respuestas con demora para un modulo"){
+      servidorWeb.agregarModulo(moduloTexto)
+      servidorWeb.hayModuloParaElPedido(pedido1)
+      analizadorDemora.cantidadDeRespuestasDemoradas(moduloTexto).shouldBe(1)
+    }
+
+    it("Registrar pedido ip sospechosa y cuantos pedidos realizo esa ip "){
+      analizadorIpSospechosa.registrarPedidoIpSospechosa(pedido1,"198.168.1.5")
+      analizadorIpSospechosa.cuantosPedidosRealizoLaip().shouldBe(1)
     }
 
   }
